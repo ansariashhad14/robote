@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S - Virtual Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto Mono", monospace;
+        }
+
+        body {
+            height: 100vh;
+            background-color: #121212;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin: 0;
+        }
+
+        .main {
+            width: 100%;
+            max-width: 800px;
+            background-color: #212121;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .image-container .image img {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .main h1 {
+            color: #00bcd4;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 3rem; /* Default font size */
+        }
+
+        .main p {
+            color: #fff;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.25rem;
+        }
+
+        .input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .talk {
+            background-color: #00bcd4;
+            border: none;
+            border-radius: 50%;
+            padding: 20px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .talk:hover {
+            background-color: #007b80;
+            transform: scale(1.1);
+        }
+
+        .content {
+            color: #fff;
+            margin-top: 15px;
+            font-size: 1.125rem;
+            text-align: center;
+        }
+
+        /* Media Queries for Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .main {
+                padding: 15px;
+            }
+
+            .main h1 {
+                font-size: 2.5rem;
+            }
+
+            .main p {
+                font-size: 1.125rem;
+            }
+
+            .talk {
+                padding: 15px;
+                font-size: 20px;
+            }
+
+            .content {
+                font-size: 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .main h1 {
+                font-size: 2rem;
+            }
+
+            .main p {
+                font-size: 1rem;
+            }
+
+            .talk {
+                padding: 15px;
+                font-size: 18px;
+            }
+
+            .content {
+                font-size: 0.875rem;
+            }
+
+            .image-container .image img {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="main">
+        <div class="image-container">
+            <div class="image">
+                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2U0bDVpNHpzaXA4ZDRlb2M3MTkydTc2aTJ6c2hreHpkYzd2ZnJ2NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wkSyGueYTnk40/giphy.gif" alt="JARVIS">
+
+
+        <div class="input">
+            <button class="talk" id="microphoneBtn">
+                <i class="fas fa-microphone-alt"></i>
+            </button>
+            <h1 class="content">Click here to speak</h1>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            const microphoneBtn = document.getElementById('microphoneBtn');
+            const content = document.querySelector('.content');
+
+            // Start listening for speech
+            microphoneBtn.addEventListener('click', () => {
+                recognition.start();
+                content.textContent = "Listening...";
+            });
+
+            // Handle speech results
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                content.textContent = `You said: ${transcript}`;
+
+                // Handling Voice Commands for Websites/Software
+                if (transcript.includes("open calculator")) {
+                    window.open("calculator://", "_blank");
+                    content.textContent = "Opening Calculator...";
+                } else if (transcript.includes("open youtube")) {
+                    window.open("https://www.youtube.com", "_blank");
+                    content.textContent = "Opening YouTube...";
+                } else if (transcript.includes("open google")) {
+                    window.open("https://www.google.com", "_blank");
+                    content.textContent = "Opening Google...";
+                } else if (transcript.includes("open spotify")) {
+                    window.open("https://www.spotify.com", "_blank");
+                    content.textContent = "Opening Spotify...";
+                } else if (transcript.includes("open gmail")) {
+                    window.open("https://mail.google.com", "_blank");
+                    content.textContent = "Opening Gmail...";
+                } else if (transcript.includes("open facebook")) {
+                    window.open("https://www.facebook.com", "_blank");
+                    content.textContent = "Opening Facebook...";
+                } else {
+                    // Answering Common Questions and Global Knowledge
+                    const answers = {
+                        "how are you": "I'm doing great! How can I assist you today?",
+                        "who are you": "I am JARVIS, your virtual assistant.",
+                        "what is your name": "My name is JARVIS.",
+                        "what is the weather": "I can't check the weather directly, but you can visit a weather website.",
+                        "tell me a joke": "Why don't skeletons fight each other? They don't have the guts!",
+                        // Global Knowledge about the world
+                        "capital of france": "The capital of France is Paris.",
+                        "capital of japan": "The capital of Japan is Tokyo.",
+                        "capital of germany": "The capital of Germany is Berlin.",
+                        "largest country in the world": "The largest country in the world by area is Russia.",
+                        "longest river in the world": "The longest river in the world is the Nile River, though some say the Amazon River is the longest.",
+                        "eiffel tower": "The Eiffel Tower is a wrought-iron lattice tower on the Champ de Mars in Paris, France, built between 1887 and 1889.",
+                        "great wall of china": "The Great Wall of China is a series of fortifications made of various materials, generally built along the northern borders of China to protect against invasions.",
+                        "mount everest": "Mount Everest is the highest mountain in the world, standing at 8,848 meters (29,029 feet). It's located in the Himalayas on the border between Nepal and China."
+                    };
+
+                    let response = answers[transcript];
+                    if (response) {
+                        content.textContent = response;
+                    } else {
+                        content.textContent = "Sorry, I couldn't understand that. Can you please try again?";
+                    }
+                }
+            };
+
+            // Handle errors
+            recognition.onerror = (event) => {
+                content.textContent = "Sorry, I couldn't understand that. Please try again.";
+            };
+
+            // Reset when recognition ends
+            recognition.onend = () => {
+                content.textContent = "Click here to speak";
+            };
+        } else {
+            alert("Your browser does not support speech recognition.");
+        }
+    </script>
+
+</body>
+</html>
